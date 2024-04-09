@@ -9,7 +9,6 @@ pipeline {
              git git branch: 'main', url: 'https://github.com/MawudorA/web-app.git' 
             }
         }
-
         stage ('build with maven') {
             steps {
                 sh "mvn clean"
