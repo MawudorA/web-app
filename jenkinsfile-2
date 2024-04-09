@@ -9,10 +9,16 @@ pipeline{
              git 'https://github.com/MawudorA/maven-web-app.git' 
             }
         }
-        
+
         stage ('build with maven') {
             steps {
                 sh "mvn clean"
+            }
+        }
+
+         stage ('testing with maven') {
+            steps {
+                sh "mvn test" 
             }
         }
 
