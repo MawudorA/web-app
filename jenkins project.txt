@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+    tools {
+     maven "maven3.9.6"   
+    }
+     stages {
+        stage('git clone repository') {
+            steps { 
+             git 'https://github.com/MawudorA/maven-web-app.git' 
+            }
+        }
+
+        stage ('build with maven') {
+            steps {
+                sh "mvn clean"
+            }
+        }
+
+        stage ('testing with maven') {
+            steps {
+                sh "mvn test" 
+            }
+        }
+
+        stage ('package with maven') {
+            steps {
+                sh "mvn package"
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            environment {
+                ScannerHome = tool 'sonar5.0'
+            }
+            steps {
+                script {
+                    withSonarQubeEnv('sonarqube') {
+                        sh "${ScannerHome}/bin/sonar-scanner -Dsonar.projectKey=tano"
+                    }
+                }
+            }
+        }
+
+        stage ('upload to nexus'){
+            steps{
+                nexusArtifactUploader artifacts: [[artifactId: 'maven-web-application', classifier: '', file: '/var/lib/jenkins/workspace/my pipeline job/target/web-app.war', type: 'war']], credentialsId: 'nexus-id', groupId: 'com.mt', nexusUrl: '3.96.163.29:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'webapp-snapshot', version: '3.1.2-SNAPSHOT'
+            }
+        }
+
+        stage (deploy to tomcat) {
+            steps {
+                deploy adapters: [tomcat9(credentialsId: 'tomcat-id', path: '', url: 'http://3.96.174.217:8080')], contextPath: null, war: 'target/*.war'
+            }
+        }
+    }
+}

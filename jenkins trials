@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+    tools{
+        maven "maven3.9.6"
+    }
+    stages {
+        stage('git clone repository') {
+            steps{
+                git branch: 'main', url: 'https://github.com/MawudorA/web-app.git'
+            }
+        }
+        stage ('build with maven') {
+            steps{
+                sh 'mvn clean'
+            }
+        }
+
+        stage ('testing with maven') {
+            steps{
+                sh 'mvn test'
+            }
+        }
+        stage ('packaging with maven') {
+            steps{
+                sh 'mvn package'
+            }
+        }
+        stage ('sonarqube code scanning') {
+            environment {
+                ScannerHome = tool 'sonar5.0'
+            }
+            steps {
+                script {
+                    withSonarQubeEnv('sonarqube') {
+                        sh '${ScannerHome}/bin/sonar-scanner -Dsonar.projectKey=maxk'
+                    }
+                }
+            }
+        }
+        stage ('upload to nexus') {
+            steps {
+                nexusArtifactUploader artifacts: [[artifactId: 'maven-web-application', classifier: '', file: '/var/lib/jenkins/workspace/maven practice/target/web-app.war', type: 'war']], credentialsId: 'nexus-id', groupId: 'com.mt', nexusUrl: '15.222.12.109:8081/', nexusVersion: 'nexus3', protocol: 'http', repository: 'webapp-snapshot', version: '3.1.2-SNAPSHOT'
+            }
+        }
+    }
+}
