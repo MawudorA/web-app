@@ -1,0 +1,13 @@
+pipeline{
+    agent 'any'
+    tools {
+        maven "maven3.9.6"
+    }
+    stages {
+        stage('git clone repository') {
+            steps { 
+             git 'https://github.com/MawudorA/maven-web-app.git' 
+            }
+        }
+    }
+}
