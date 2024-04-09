@@ -6,7 +6,7 @@ pipeline{
     stages {
         stage('git clone repository') {
             steps { 
-             git 'https://github.com/MawudorA/maven-web-app.git' 
+             git git branch: 'main', url: 'https://github.com/MawudorA/web-app.git' 
             }
         }
 
