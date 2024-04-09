@@ -1,10 +1,10 @@
 pipeline{
-    agent 'any'
+    agent any
     tools {
         maven "maven3.9.6"
     }
     stages {
-        stage('git clone repository') {
+        stage ('git clone repository') {
             steps { 
              git git branch: 'main', url: 'https://github.com/MawudorA/web-app.git' 
             }
