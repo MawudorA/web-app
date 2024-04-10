@@ -20,6 +20,10 @@ pipeline {
                 sh "mvn test" 
             }
         }
-
+        stage (' packaging with maven') {
+            steps {
+                sh "mvn package"
+            }
+        }
     }
 }
