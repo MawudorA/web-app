@@ -3,7 +3,7 @@ pipeline {
     tools {
         maven "maven3.9.6"
     }
-    stages {
+    stages{
         stage ('git clone repository') {
             steps { 
              https://github.com/MawudorA/web-app.git
